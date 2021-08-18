@@ -7,10 +7,16 @@ export default createGlobalStyle`
    box-sizing: border-box;
  }
 
+ .App {
+   display: flex;
+   flex-direction: column;
+   height: 100vh;
+ }
+
  body {
-   background: #F5F5F5;
+   background: ${(props) => props.theme.colors.background};
+   color: ${(props) => props.theme.colors.title};
    font-size: 14px;
-   color: #333;
-   font-family: sans-serif;
+   font-family: 'K2D';
  }
 `;
