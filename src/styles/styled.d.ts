@@ -9,7 +9,14 @@ declare module 'styled-components' {
       secondary: string;
 
       background: string;
-      text: string;
+      gray: string;
+      white: string;
+      title: string;
+      subtitle: string;
+    };
+
+    fonts: {
+      title: string;
     };
   }
 }
