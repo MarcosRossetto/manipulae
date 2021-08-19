@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+type FavIconProps = {
+  fav: boolean;
+};
+
 export const Container = styled.div`
   display: flex;
   align-items: center;
@@ -39,12 +43,13 @@ export const Subtitle = styled.div`
 
 export const FavIcon = styled.i.attrs({
   className: 'fas fa-heart',
-})`
-  color: ${(props) => props.theme.colors.secondary};
-  margin-right: 16px;
+})<FavIconProps>`
+  color: ${(props) =>
+    props.fav ? props.theme.colors.secondary : props.theme.colors.subtitle};
 `;
 
 export const Time = styled.p`
+  margin-left: 16px;
   color: ${(props) => props.theme.colors.title};
   font-size: 12px;
 `;

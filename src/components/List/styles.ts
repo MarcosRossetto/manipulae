@@ -4,5 +4,6 @@ export const Container = styled.div`
   margin-top: 8px;
   display: flex;
   flex-direction: column;
-  flex: 1;
+  height: 65vh;
+  overflow: scroll;
 `;
