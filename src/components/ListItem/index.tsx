@@ -1,4 +1,9 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+
+import { AppDispatch } from '../../store';
+
+import { togglePlayer } from '../Header';
 
 import {
   Container,
@@ -15,37 +20,80 @@ export type Track = {
   duration: number;
   title: string;
   preview: string;
+  fav: boolean;
+  link: string;
   album: {
     title: string;
     cover_small: string;
+    cover_big: string;
   };
 };
 
-type TrackItemProps = {
+type ListItemProps = {
   track: Track;
+  favorites: any;
+  dispatch: AppDispatch;
 };
 
-const playSong = (song: string) => {
-  let player = document.getElementById('audioPlayer') as any;
-  player?.setAttribute('src', song);
-  document.getElementById('playIcon')?.classList.remove('fa-play');
-  document.getElementById('playIcon')?.classList.add('fa-pause');
+const addFavorite = (favorite: Track, favoritesId: number) => {
+  return {
+    type: 'ADD_FAVORITE',
+    favorite,
+    favoritesId,
+  };
 };
 
-const ListItem: React.FC<TrackItemProps> = ({ track }: TrackItemProps) => {
-  const [favorite, setFavorite] = useState(false);
+const deleteFavorite = (favorite: Track, favoritesId: number) => {
+  return {
+    type: 'DELETE_FAVORITE',
+    favorite,
+    favoritesId,
+  };
+};
+
+export const currentTrack = (cover: string, name: string, link: string) => {
+  return {
+    type: 'CURRENT_TRACK',
+    currentTrack: { cover, name, link },
+  };
+};
+
+const ListItem: React.FC<any> = ({
+  track,
+  favorites,
+  dispatch,
+}: ListItemProps) => {
+  const [favorite, setFavorite] = useState(
+    favorites.track.favoritesId.includes(track.id) ? true : false
+  );
+
+  const toggleFavorite = (favTrack: Track) => {
+    if (favorites.track.favoritesId.includes(favTrack.id)) {
+      setFavorite(!favorite);
+      dispatch(deleteFavorite(track, track.id));
+    } else {
+      setFavorite(!favorite);
+      dispatch(addFavorite(track, track.id));
+    }
+  };
+
+  const playSong = (song: string) => {
+    let player = document.getElementById('audioPlayer') as any;
+
+    player?.setAttribute('src', song);
+
+    dispatch(togglePlayer(true));
+    dispatch(currentTrack(track.album.cover_big, track.title, track.link));
+  };
 
   return (
     <Container>
-      <ThumbContainer>
-        <img
-          id="imageSong"
-          src={track.album.cover_small}
-          alt=""
-          onClick={() => {
-            playSong(track.preview);
-          }}
-        />
+      <ThumbContainer
+        onClick={() => {
+          playSong(track.preview);
+        }}
+      >
+        <img id="imageSong" src={track.album.cover_small} alt={track.title} />
 
         <div>
           <Title>{track.title}</Title>
@@ -57,11 +105,9 @@ const ListItem: React.FC<TrackItemProps> = ({ track }: TrackItemProps) => {
         <FavIcon
           fav={favorite}
           onClick={() => {
-            setFavorite(!favorite);
-            console.log(track.id);
+            toggleFavorite(track);
           }}
         />
-
         <Time>{track.duration}</Time>
         <audio id="audioPlayer" autoPlay></audio>
       </LikeContainer>
@@ -69,4 +115,4 @@ const ListItem: React.FC<TrackItemProps> = ({ track }: TrackItemProps) => {
   );
 };
 
-export default ListItem;
+export default connect((state) => ({ favorites: state }))(ListItem);

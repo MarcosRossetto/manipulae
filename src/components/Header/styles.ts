@@ -1,5 +1,13 @@
 import styled from 'styled-components';
 
+type MaskProps = {
+  background: string;
+};
+
+type PlayerIconProps = {
+  icon: boolean;
+};
+
 export const Container = styled.div`
   position: relative;
   z-index: 5;
@@ -7,14 +15,14 @@ export const Container = styled.div`
   height: 20vh;
 `;
 
-export const Mask = styled.div`
+export const Mask = styled.div<MaskProps>`
   position: absolute;
   z-index: -1;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  background-image: url('https://i.ytimg.com/vi/LqI78S14Wgg/maxresdefault.jpg');
+  background-image: ${(props) => `url(${props.background})`};
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 0 0 16px 16px;
@@ -29,7 +37,8 @@ export const ContainerDeezer = styled.div`
   padding: 8px 16px;
 `;
 
-export const Deezer = styled.button`
+export const Deezer = styled.a`
+  text-decoration: none;
   background: none;
   outline: none;
   padding: 4px;
@@ -51,6 +60,6 @@ export const Title = styled.h1`
   font-size: 16px;
 `;
 
-export const PlayIcon = styled.i.attrs({
-  className: 'fas fa-play',
-})``;
+export const PlayerIcon = styled.i.attrs((props: PlayerIconProps) => ({
+  className: props.icon ? 'fas fa-pause' : 'fas fa-play',
+}))<PlayerIconProps>``;

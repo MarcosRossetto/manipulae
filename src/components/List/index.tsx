@@ -1,16 +1,50 @@
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+
+import InfiniteScroll from 'react-infinite-scroll-component';
 import ListItem, { Track } from '../ListItem';
+
+import { Container, SearchContainer, SearchInput } from './styles';
+
+import { secondToMinute } from '../../utils/secondsToMinutes';
+
 import api from '../../services/api';
 
-import { Container } from './styles';
-import { secondToMinute } from '../../utils/secondsToMinutes';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import Search from '../Search';
+const addTracks = (tracks: Track[]) => {
+  return {
+    type: 'ADD_TRACKS',
+    tracks,
+  };
+};
 
-const List: React.FC = () => {
+const List: React.FC<any> = ({ dispatch }: any) => {
   const [track, setTrack] = useState<Track[]>([]);
   const [index, setIndex] = useState(0);
+  const [search, setSearch] = useState('');
   let limit = 100;
+
+  async function searchTrack() {
+    try {
+      const response = await api.get(
+        `search?q=${search.replace(/ /g, '')}&index=${index}&limit=${limit}`
+      );
+      const formattedResult = await response.data.data.map((data: Track) => {
+        return {
+          ...data,
+          duration: secondToMinute(data.duration),
+        };
+      });
+
+      setTrack([...formattedResult, ...track]);
+
+      dispatch(addTracks(track));
+
+      if (index === 0) return setIndex(index + limit);
+      if (index > 0) return setIndex(index * 2);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   async function getTrack() {
     try {
@@ -18,7 +52,7 @@ const List: React.FC = () => {
         `chart/0/tracks?index=${index}&limit=${limit}`
       );
 
-      const formattedResult = await response.data.data.map((data: any) => {
+      const formattedResult = await response.data.data.map((data: Track) => {
         return {
           ...data,
           duration: secondToMinute(data.duration),
@@ -26,6 +60,8 @@ const List: React.FC = () => {
       });
 
       setTrack([...track, ...formattedResult]);
+
+      dispatch(addTracks(track));
 
       if (index === 0) return setIndex(index + limit);
       if (index > 0) return setIndex(index * 2);
@@ -36,25 +72,43 @@ const List: React.FC = () => {
 
   useEffect(() => {
     getTrack();
+    // eslint-disable-next-line
   }, []);
 
   return (
     <Container id="scrollableDiv">
-      <Search />
+      <SearchContainer>
+        <SearchInput
+          onKeyUp={(e: any) => {
+            setIndex(0);
+            setTrack([]);
+            setSearch('');
+            setSearch(e.target.value);
+            searchTrack();
+          }}
+        />
+        <i className="fas fa-search"></i>
+      </SearchContainer>
+
       <InfiniteScroll
-        dataLength={track.length - 5} //This is important field to render the next data
-        next={getTrack}
+        dataLength={track.length - 5}
+        next={() => {
+          if (search === '') {
+            getTrack();
+          } else {
+            searchTrack();
+          }
+        }}
         hasMore={true}
         loader={<p></p>}
-        endMessage={<p></p>}
         scrollableTarget="scrollableDiv"
       >
-        {track.map((item: Track) => {
-          return <ListItem key={item.id} track={item} />;
+        {track.map((item: Track, index: number) => {
+          return <ListItem key={index} track={item} />;
         })}
       </InfiniteScroll>
     </Container>
   );
 };
 
-export default List;
+export default connect((state) => ({ tracks: state }))(List);

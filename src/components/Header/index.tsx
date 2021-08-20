@@ -1,4 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
+import { AppDispatch, RootState } from '../../store';
 
 import {
   Container,
@@ -7,36 +10,49 @@ import {
   Mask,
   ContainerPlayer,
   Title,
-  PlayIcon,
+  PlayerIcon,
 } from './styles';
 
-const Header: React.FC = () => {
-  const controlsSong = () => {
-    let control = document.getElementById('audioPlayer') as any;
+type HeaderProps = {
+  header: RootState;
+  dispatch: AppDispatch;
+};
+
+export const togglePlayer = (player: boolean) => {
+  return {
+    type: 'TOGGLE_PLAYER',
+    player,
+  };
+};
+
+const Header: React.FC<any> = ({ header, dispatch }: HeaderProps) => {
+  const controlPlayer = () => {
+    let control = document.getElementById('audioPlayer') as HTMLAudioElement;
+
     if (!control.paused && !control.ended) {
       control.pause();
-      document.getElementById('playIcon')?.classList.remove('fa-pause');
-      document.getElementById('playIcon')?.classList.add('fa-play');
+      dispatch(togglePlayer(false));
     } else if (control.paused) {
       control.play();
-      document.getElementById('playIcon')?.classList.remove('fa-play');
-      document.getElementById('playIcon')?.classList.add('fa-pause');
+      dispatch(togglePlayer(true));
     }
   };
 
   return (
     <Container>
-      <Mask />
+      <Mask background={header.track.currentTrack.cover} />
+
       <ContainerDeezer>
-        <Deezer>Ouvir no Deezer</Deezer>
+        <Deezer href={header.track.currentTrack.link}>Ouvir no Deezer</Deezer>
       </ContainerDeezer>
 
       <ContainerPlayer>
-        <Title>Demons</Title>
-        <PlayIcon id="playIcon" onClick={controlsSong} />
+        <Title>{header.track.currentTrack.name}</Title>
+
+        <PlayerIcon onClick={controlPlayer} icon={header.track.player} />
       </ContainerPlayer>
     </Container>
   );
 };
 
-export default Header;
+export default connect((state) => ({ header: state }))(Header);

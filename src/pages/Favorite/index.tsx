@@ -4,21 +4,21 @@ import { Provider } from 'react-redux';
 import store from '../../store/index';
 
 import Header from '../../components/Header';
-import List from '../../components/List';
+import ListFavorites from '../../components/ListFavorites';
 import Menu from '../../components/Menu';
 
 import { Container } from './styles';
 
-const Home: React.FC = () => {
+const Favorite: React.FC = () => {
   return (
     <Container>
       <Provider store={store}>
         <Header />
-        <List />
+        <ListFavorites />
         <Menu />
       </Provider>
     </Container>
   );
 };
 
-export default Home;
+export default Favorite;
