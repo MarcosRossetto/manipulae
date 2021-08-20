@@ -4,14 +4,14 @@ import dark from './styles/themes/dark';
 
 import GlobalStyle from './styles/global';
 
-import Home from './pages/Home';
+import Routes from './routes';
 
 function App() {
   return (
     <ThemeProvider theme={dark}>
       <div className="App">
         <GlobalStyle />
-        <Home />
+        <Routes />
       </div>
     </ThemeProvider>
   );
