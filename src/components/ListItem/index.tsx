@@ -51,10 +51,15 @@ const deleteFavorite = (favorite: Track, favoritesId: number) => {
   };
 };
 
-export const currentTrack = (cover: string, name: string, link: string) => {
+export const currentTrack = (
+  cover: string,
+  name: string,
+  link: string,
+  preview: string
+) => {
   return {
     type: 'CURRENT_TRACK',
-    currentTrack: { cover, name, link },
+    currentTrack: { cover, name, link, preview },
   };
 };
 
@@ -83,7 +88,14 @@ const ListItem: React.FC<any> = ({
     player?.setAttribute('src', song);
 
     dispatch(togglePlayer(true));
-    dispatch(currentTrack(track.album.cover_big, track.title, track.link));
+    dispatch(
+      currentTrack(
+        track.album.cover_big,
+        track.title,
+        track.link,
+        track.preview
+      )
+    );
   };
 
   return (

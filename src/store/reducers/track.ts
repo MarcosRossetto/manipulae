@@ -4,7 +4,7 @@ const INITIAL_STATE = {
   favorites: [] as Track[],
   favoritesId: [] as number[],
   player: false,
-  currentTrack: { cover: '', name: '', link: '' },
+  currentTrack: { cover: '', name: '', link: '', preview: '' },
 };
 
 export const track = (state = INITIAL_STATE, action: any) => {
@@ -39,6 +39,7 @@ export const track = (state = INITIAL_STATE, action: any) => {
         cover: action.currentTrack.cover,
         name: action.currentTrack.name,
         link: action.currentTrack.link,
+        preview: action.currentTrack.preview,
       },
     };
   }

@@ -33,7 +33,13 @@ const Header: React.FC<any> = ({ header, dispatch }: HeaderProps) => {
     if (!control.paused && !control.ended) {
       control.pause();
       dispatch(togglePlayer(false));
-    } else if (control.paused) {
+    } else if (control.paused && control.currentSrc) {
+      control.play();
+      dispatch(togglePlayer(true));
+    } else if (!control.currentSrc) {
+      let player = document.getElementById('audioPlayer') as any;
+
+      player?.setAttribute('src', header.track.currentTrack.preview);
       control.play();
       dispatch(togglePlayer(true));
     }

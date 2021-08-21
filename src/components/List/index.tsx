@@ -17,7 +17,19 @@ const addTracks = (tracks: Track[]) => {
   };
 };
 
-const List: React.FC<any> = ({ dispatch }: any) => {
+const addCurrentTrack = ({ album, title, link, preview }: Track) => {
+  return {
+    type: 'CURRENT_TRACK',
+    currentTrack: {
+      cover: album.cover_big,
+      name: title,
+      link,
+      preview,
+    },
+  };
+};
+
+const List: React.FC<any> = ({ tracks, dispatch }: any) => {
   const [track, setTrack] = useState<Track[]>([]);
   const [index, setIndex] = useState(0);
   const [search, setSearch] = useState('');
@@ -52,8 +64,12 @@ const List: React.FC<any> = ({ dispatch }: any) => {
   async function getTrack() {
     try {
       const response = await api.get(`chart/0/tracks?index=${index}`);
+      let isVoidCurrentTrack = tracks.track.currentTrack.name;
 
       formatData(response.data);
+      if (isVoidCurrentTrack === '') {
+        dispatch(addCurrentTrack(response.data.data[0]));
+      }
     } catch (error) {
       console.log(error);
     }
