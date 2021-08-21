@@ -5,7 +5,17 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 70vh;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  @media (min-width: 1024px) {
+    max-width: 80vw;
+    margin: 0 auto;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const SearchContainer = styled.div``;
@@ -24,5 +34,13 @@ export const SearchInput = styled.input.attrs({
 
   ::placeholder {
     color: ${(props) => props.theme.colors.title};
+  }
+
+  @media (min-width: 1024px) {
+    max-width: 60vw;
+  }
+
+  @media (min-width: 1366px) {
+    max-width: 40vw;
   }
 `;

@@ -12,11 +12,20 @@ export const Container = styled.div`
   padding: 8px;
   margin-bottom: 16px;
   justify-content: space-between;
+
+  @media (min-width: 1024px) {
+    max-width: 80vw;
+  }
+
+  @media (min-width: 1366px) {
+    max-width: 70vw;
+  }
 `;
 
 export const ThumbContainer = styled.div`
   display: flex;
   align-items: center;
+  cursor: pointer;
 
   img {
     border-radius: 16px;
@@ -46,6 +55,7 @@ export const FavIcon = styled.i.attrs({
 })<FavIconProps>`
   color: ${(props) =>
     props.fav ? props.theme.colors.secondary : props.theme.colors.subtitle};
+  cursor: pointer;
 `;
 
 export const Time = styled.p`

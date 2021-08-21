@@ -62,4 +62,6 @@ export const Title = styled.h1`
 
 export const PlayerIcon = styled.i.attrs((props: PlayerIconProps) => ({
   className: props.icon ? 'fas fa-pause' : 'fas fa-play',
-}))<PlayerIconProps>``;
+}))<PlayerIconProps>`
+  cursor: pointer;
+`;

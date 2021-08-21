@@ -21,26 +21,29 @@ const List: React.FC<any> = ({ dispatch }: any) => {
   const [track, setTrack] = useState<Track[]>([]);
   const [index, setIndex] = useState(0);
   const [search, setSearch] = useState('');
-  let limit = 100;
+
+  const formatData = ({ data }: any) => {
+    const formattedResult = data.map((data: Track) => {
+      return {
+        ...data,
+        duration: secondToMinute(data.duration),
+      };
+    });
+
+    setTrack([...track, ...formattedResult]);
+
+    setIndex(index + 25);
+
+    dispatch(addTracks(track));
+  };
 
   async function searchTrack() {
     try {
       const response = await api.get(
-        `search?q=${search.replace(/ /g, '')}&index=${index}&limit=${limit}`
+        `search?q=${search.replace(/ /g, '')}&index=${index}`
       );
-      const formattedResult = await response.data.data.map((data: Track) => {
-        return {
-          ...data,
-          duration: secondToMinute(data.duration),
-        };
-      });
 
-      setTrack([...formattedResult, ...track]);
-
-      dispatch(addTracks(track));
-
-      if (index === 0) return setIndex(index + limit);
-      if (index > 0) return setIndex(index * 2);
+      formatData(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -48,23 +51,9 @@ const List: React.FC<any> = ({ dispatch }: any) => {
 
   async function getTrack() {
     try {
-      const response = await api.get(
-        `chart/0/tracks?index=${index}&limit=${limit}`
-      );
+      const response = await api.get(`chart/0/tracks?index=${index}`);
 
-      const formattedResult = await response.data.data.map((data: Track) => {
-        return {
-          ...data,
-          duration: secondToMinute(data.duration),
-        };
-      });
-
-      setTrack([...track, ...formattedResult]);
-
-      dispatch(addTracks(track));
-
-      if (index === 0) return setIndex(index + limit);
-      if (index > 0) return setIndex(index * 2);
+      formatData(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -82,7 +71,6 @@ const List: React.FC<any> = ({ dispatch }: any) => {
           onKeyUp={(e: any) => {
             setIndex(0);
             setTrack([]);
-            setSearch('');
             setSearch(e.target.value);
             searchTrack();
           }}
