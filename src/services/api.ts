@@ -4,7 +4,7 @@ const api = axios.create({
   headers: {
     apiId: process.env.APP_ID,
   },
-  baseURL: 'http://api.deezer.com/',
+  baseURL: 'https://api.deezer.com/',
 });
 
 export default api;
