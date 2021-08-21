@@ -26,6 +26,7 @@ export const togglePlayer = (player: boolean) => {
 };
 
 const Header: React.FC<any> = ({ header, dispatch }: HeaderProps) => {
+  let visible = header.track.currentTrack.name;
   const controlPlayer = () => {
     let control = document.getElementById('audioPlayer') as HTMLAudioElement;
 
@@ -43,13 +44,17 @@ const Header: React.FC<any> = ({ header, dispatch }: HeaderProps) => {
       <Mask background={header.track.currentTrack.cover} />
 
       <ContainerDeezer>
-        <Deezer href={header.track.currentTrack.link}>Ouvir no Deezer</Deezer>
+        {visible && (
+          <Deezer href={header.track.currentTrack.link}>Ouvir no Deezer</Deezer>
+        )}
       </ContainerDeezer>
 
       <ContainerPlayer>
         <Title>{header.track.currentTrack.name}</Title>
 
-        <PlayerIcon onClick={controlPlayer} icon={header.track.player} />
+        {visible && (
+          <PlayerIcon onClick={controlPlayer} icon={header.track.player} />
+        )}
       </ContainerPlayer>
     </Container>
   );
